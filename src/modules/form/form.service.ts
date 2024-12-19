@@ -10,7 +10,10 @@ export class FormService {
 
     async createForm(data: { title: string }) {
         return prisma.form.create({
-            data,
+            data : {
+                title: data.title,
+                workspaceId: '1',
+            }
         });
     }
 

@@ -13,9 +13,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Form {
+model Workspace {
   id        String   @id @default(uuid(7))
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  name      String
+  forms     Form[]
+  ApiKey    ApiKey[]
+}
+
+model ApiKey {
+  id          String    @id @default(uuid(7))
+  createdAt   DateTime  @default(now())
+  expiresAt   DateTime
+  note        String
+  key         String
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+model Form {
+  id          String    @id @default(uuid(7))
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String
+  workspaceId String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  fields      Field[]
+}
+
+model Field {
+  id        String    @id @default(uuid(7))
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   title     String
+  type      FieldType
+  formId    String
+  form      Form      @relation(fields: [formId], references: [id])
+}
+
+enum FieldType {
+  TEXT
+  NUMBER
+  EMAIL
+  SELECT
+  DATE
+  FILE
 }
